@@ -3,19 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>Online Video Converter</title>
+    <link rel="stylesheet" href="index.css">
 </head>
 <body>
-<h1 style="margin: auto;  width: 30%; margin-top: 40px">Online Video Converter</h1>
-<div class="mb-3" style="margin: auto; margin-top: 250px; width: 50%; border: 6px solid blue; padding: 40px;">
-    <div class="row">
-        <input class="form-control" type="file" size="30" accept="video/mp4,video/x-m4v,video/*" id="video">
-        <button type="btn btn-primary" class="btn btn-outline-primary" onclick="obtain_video_local()" style="width: 20%; margin-top: 20px; position: relative">Upload</button>
-
-        <input type="url" name="url" id="url_video" placeholder="https://example.com" pattern="https://.*" size="30" style="margin-top: 20px">
-        <button type="btn btn-primary" class="btn btn-outline-primary" onclick="obtain_video_url()" style="width: 20%; margin-top: 20px; position: relative">Upload</button>
-
-    </div>
-
+<header class="header">
+    <figure>
+        <video class="aud"
+               controls
+               src=" ">
+            Your browser does not support the
+            <code>audio</code> element.
+        </video>
+    </figure>
+</header>
+<div class="form">
+    <form>
+        <label> Upload video:<br />
+            <input class="profile-aud" type="file" accept="video/mp4,video/x-m4v,video/*" id="video">
+        </label>
+        <button type="submit" >Upload</button>
+    </form>
 </div>
 <script src="js/processor.js"></script>
 <!-- CSS only -->

@@ -1,34 +1,54 @@
 
-var video
-
 function obtain_video_local() {
+    show(document.getElementById('vd'));
+
+
+
     const path_local = document.getElementById("video").value;
+    const video = document.getElementById("video").files[0];
 
     if (path_local == ''){
         alert("No s'ha introduit un video")
     }
     else {
-        video = path_local
-        window.location.href = '../preview.html'
-        put_video_preview()
+        console.log(path_local)
+        const videoURL = URL.createObjectURL(video);
+        document.querySelector('.profile img').setAttribute('src', videoURL);
+
+
+        video.src = path_local
+        localStorage.setItem("video", path_local)
     }
 }
 
-function obtain_video_url() {
-    const url_web = document.getElementById("url_video").value;
-    if (url_web == ''){
-        alert("No s'ha introduit un video")
-    }
-    else {
-        video = url_web
-        window.location.href = '../preview.html'
-        put_video_preview()
-    }
-}
+const getValuesFromInputs = () =>{
+    const profileAud = document.querySelector('input.profile-aud').files[0];
 
-function put_video_preview() {
-    const video_preview = document.getElementById("video_preview");
-    console.log(video)
-    video_preview.src = video
+    document.querySelector('form').style.display = 'none';
+
+    return profileAud;
 
 }
+
+const convertInputValues = () => {
+    const profileAud = getValuesFromInputs();
+
+    const profileAudURL = URL.createObjectURL(profileAud);
+
+    return profileAudURL
+
+}
+
+const addInputToProfile = () => {
+
+    const profileAudURL  = convertInputValues();
+
+    document.querySelector('.aud').setAttribute('src', profileAudURL);
+
+    document.querySelector('.header').style.display = 'flex';
+}
+
+document.querySelector('button').addEventListener('click', (e) => {
+    e.preventDefault();
+    addInputToProfile();
+});
