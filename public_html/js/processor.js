@@ -1,14 +1,26 @@
 
-function process_video() {
-    const video = document.getElementById("video").value;
-    const url_video = document.getElementById("url").value;
-    if (video === '' && url_video === ''){
+var video
+
+function obtain_video_local() {
+    const path_local = document.getElementById("video").value;
+    
+    if (path_local == ''){
         alert("No s'ha introduit un video")
     }
-    else if (video !== '' && url_video !== ''){
-        alert("S'han introduit dos videos")
+    else {
+        console.log('hola')
+    }
+}
+
+function obtain_video_url() {
+    //const url_web = document.getElementById("url").value;
+    const url_web = document.getElementById("video").value;
+    
+    if (url_web == ''){
+        alert("No s'ha introduit un video")
     }
     else {
+
         console.log('hola')
     }
 }
