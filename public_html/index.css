@@ -15,10 +15,19 @@ form,
     justify-content: center;
     border: 2px dotted blue;
 }
-input,
-button {
+input{
     width: 175px;
     height: 30px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 7px;
+    border: 2px solid blue;
+}
+button {
+    width: 175px;
+    height: 40px;
     border-radius: 3px;
     display: flex;
     align-items: center;
@@ -31,13 +40,6 @@ input[type="file"]{
     border: none;
 }
 
-button {
-    background-color: blue;
-    color: white;
-    box-sizing: content-box;
-    margin-top: 15px;
-    cursor: pointer;
-}
 label {
     padding: 10px;
 }
@@ -61,8 +63,8 @@ figure {
 }
 
 video {
-    width: 800px;
-    height: 600px;
+    width: 600px;
+    height: 400px;
     margin-top: 10px;
 }
 

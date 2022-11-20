@@ -9,30 +9,30 @@
 <header class="header">
     <figure>
         <h1 style="display: flex; justify-content: center; color: black">Previsualizació del video</h1>
-        <video class="video"
-               controls
-               src=" ">
-            Your browser does not support the
-            <code>audio</code> element.
-        </video>
-        <div class="input-group" style="color: black; margin-top: 20px">
-            <input type="checkbox" id="escalar" value="Escalar video" aria-label="Checkbox for following text input">Escalar video<br>
-            <input type="checkbox" id="bitrate" aria-label="Checkbox for following text input">Modificar el bitrate<br>
-            <input type="checkbox" id="velocitat" aria-label="Checkbox for following text input">Canviar velocitat<br><br>
-            <button class="btn btn-primary" id="edita">Edita</button>
-        </div>
+
+
     </figure>
 </header>
 <div class="form">
     <form>
         <h1 style=" display: flex; justify-content: center;">Personalitza i edita els teus videos</h1>
+        <video id="player"
+               controls
+               src=" ">
+            Your browser does not support the
+            <code>audio</code> element.
+        </video>
         <label> Puja el teu video:<br/>
-            <input class="video" type="file" accept="video/mp4,video/x-m4v,video/*" id="video">
+            <input class="video" type="file" accept="video/mp4,video/x-m4v,video/*" id="upload">
         </label>
-        <button class="btn btn-primary" id="upload">Puja</button>
+        <div class="input-group" style="color: black; margin-top: 20px">
+            <input type="checkbox" id="escalar" value="Escalar video" aria-label="Checkbox for following text input">Escalar video<br>
+            <input type="checkbox" id="bitrate" aria-label="Checkbox for following text input">Modificar el bitrate<br>
+            <input type="checkbox" id="velocitat" aria-label="Checkbox for following text input">Canviar velocitat<br><br>
+        </div>
+        <button class="btn btn-primary" id="edita">Edita</button>
     </form>
 </div>
-<script src="js/processor.js"></script>
 <!-- CSS only -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
 <!-- JavaScript Bundle with Popper -->
