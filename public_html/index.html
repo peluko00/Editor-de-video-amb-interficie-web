@@ -2,26 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Online Video Converter</title>
+    <title>Editor de Videos Online</title>
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
 <header class="header">
     <figure>
-        <video class="aud"
+        <h1 style="display: flex; justify-content: center; color: black">Previsualizació del video</h1>
+        <video class="video"
                controls
                src=" ">
             Your browser does not support the
             <code>audio</code> element.
         </video>
+        <div class="input-group" style="color: black; margin-top: 20px">
+            <input type="checkbox" id="escalar" value="Escalar video" aria-label="Checkbox for following text input">Escalar video<br>
+            <input type="checkbox" id="bitrate" aria-label="Checkbox for following text input">Modificar el bitrate<br>
+            <input type="checkbox" id="velocitat" aria-label="Checkbox for following text input">Canviar velocitat<br><br>
+            <button class="btn btn-primary" id="edita">Edita</button>
+        </div>
     </figure>
 </header>
 <div class="form">
     <form>
-        <label> Upload video:<br />
-            <input class="profile-aud" type="file" accept="video/mp4,video/x-m4v,video/*" id="video">
+        <h1 style=" display: flex; justify-content: center;">Personalitza i edita els teus videos</h1>
+        <label> Puja el teu video:<br/>
+            <input class="video" type="file" accept="video/mp4,video/x-m4v,video/*" id="video">
         </label>
-        <button type="submit" >Upload</button>
+        <button class="btn btn-primary" id="upload">Puja</button>
     </form>
 </div>
 <script src="js/processor.js"></script>
