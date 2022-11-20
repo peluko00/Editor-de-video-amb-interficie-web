@@ -1,26 +1,65 @@
+const getValuesFromInputs = () =>{
+    const profileAud = document.querySelector('input.video').files[0];
 
-var video
-
-function obtain_video_local() {
-    const path_local = document.getElementById("video").value;
-    
-    if (path_local == ''){
+    if (profileAud == null){
         alert("No s'ha introduit un video")
+        return ;
     }
-    else {
-        console.log('hola')
-    }
+
+    document.querySelector('form').style.display = 'none';
+
+    return profileAud;
+
 }
 
-function obtain_video_url() {
-    //const url_web = document.getElementById("url").value;
-    const url_web = document.getElementById("video").value;
-    
-    if (url_web == ''){
-        alert("No s'ha introduit un video")
-    }
-    else {
+const convertInputValues = () => {
+    const profileAud = getValuesFromInputs();
 
-        console.log('hola')
+
+    const profileAudURL = URL.createObjectURL(profileAud);
+
+    return profileAudURL
+
+}
+
+const addInputToProfile = () => {
+
+    const profileAudURL  = convertInputValues();
+
+    document.querySelector('.video').setAttribute('src', profileAudURL);
+
+    document.querySelector('.header').style.display = 'flex';
+}
+
+document.getElementById('upload').addEventListener('click', (e) => {
+    e.preventDefault();
+    addInputToProfile();
+});
+
+document.getElementById('edita').addEventListener('click', (e) => {
+    e.preventDefault();
+    validateOptions()
+});
+
+function validateOptions () {
+    const escalar = document.getElementById("escalar");
+    const bitrate = document.getElementById("bitrate");
+    const velocitat = document.getElementById("velocitat");
+
+    console.log(escalar)
+
+    var checkboxes = []
+
+    if (escalar.checked){
+        checkboxes.push('escalar')
+    }
+    if (bitrate.checked){
+        checkboxes.push('bitrate')
+    }
+    if (velocitat.checked){
+        checkboxes.push('velocitat')
+    }
+    if(checkboxes.length === 0) {
+        alert("S'ha de seleccionar com a minim una opció");
     }
 }
