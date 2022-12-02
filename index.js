@@ -4,10 +4,10 @@ const http = require('http');
 const download = require('download');
 const server = http.createServer(app);
 const fs = require('fs');
-const { createFFmpeg, fetchFile } = require('@ffmpeg/ffmpeg');
-
-const ffmpeg = createFFmpeg({ log: true });
-
+var ffmpeg = require('fluent-ffmpeg');
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use((_, res, next) => {
     res.header('Cross-Origin-Opener-Policy', 'same-origin');
     res.header('Cross-Origin-Embedder-Policy', 'require-corp');
@@ -73,6 +73,7 @@ app.get('/videoplayer' , (req, res) => {
         "Content-Length": contentLength,
         "Content-Type": "video/mp4"
     }
+
     res.writeHead(206, headers)
     const stream = fs.createReadStream(videoPath, {
         start,
@@ -80,6 +81,64 @@ app.get('/videoplayer' , (req, res) => {
     })
     stream.pipe(res)
 });
+app.post('/edit', (req, res) => {
+    console.log(req.body)
+    if (req.body.escalar){
+        ffmpeg('videos/input.mp4') //Input Video File
+            .output('videos/output.mp4') // Output File
+            .audioCodec('libmp3lame') // Audio Codec
+            .videoCodec('libx264') // Video Codec
+            .setStartTime(03) // Start Position
+            .setDuration(5) // Duration
+            .on('end', function (err) {
+                if (!err) {
+                    console.log("Conversion Done");
+                    res.send('Video Cropping Done');
+                }
+            })
+            .on('error', function (err) {
+                console.log('error: ', +err);
+            }).run();
+    }
+    if (req.body.bitrate){
+        ffmpeg(`./videos/${req.session.video}`)
+            .audioCodec('libmp3lame') // Audio Codec
+            .videoCodec('libx264')
+            .videoFilters('fade=in:0:200')
+            .output('videos/fadein.mp4')
+
+            .on('end', function (err) {
+                if (!err)
+                    res.send("Succesful");
+            })
+            .on('progress', function (data) {
+                console.log(data.percent);
+            })
+            .on('error', function (err) {
+                console.log('error: ' + err);
+            }).run();
+    }
+    if (req.body.velocitat){
+        ffmpeg(`./videos/${req.session.video}`)
+            .audioCodec('libmp3lame') // Audio Codec
+            .videoCodec('libx264')
+            .videoFilters('fade=in:0:200')
+            .output('videos/fadein.mp4')
+
+            .on('end', function (err) {
+                if (!err)
+                    res.send("Succesful");
+            })
+            .on('progress', function (data) {
+                console.log(data.percent);
+            })
+            .on('error', function (err) {
+                console.log('error: ' + err);
+            }).run();
+    }
+})
+
+
 
 server.listen(3000, () => {
     console.log('Https web server is listening on port ' + 3000);

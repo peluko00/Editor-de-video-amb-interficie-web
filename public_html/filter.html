@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Editor</title>
 
 </head>
 <body>
@@ -14,8 +14,26 @@
             <input type="checkbox" id="bitrate" aria-label="Checkbox for following text input">Modificar el bitrate<br>
             <input type="checkbox" id="velocitat" aria-label="Checkbox for following text input">Canviar velocitat<br><br>
         </div>
-        <button class="btn btn-primary" id="edita">Edita</button>
+        <button class="btn btn-primary" id="edita" onclick="edit()">Edita</button>
 </body>
+<script>
+    async function edit() {
+        const body = {
+            escalar: document.getElementById('escalar').checked,
+            bitrate: document.getElementById('bitrate').checked,
+            velocitat: document.getElementById('velocitat').checked
+        }
+        await fetch("/edit", {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        window.location.href = 'final_dowload.html'
+    }
+</script>
 <!-- CSS only -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
 <!-- JavaScript Bundle with Popper -->
