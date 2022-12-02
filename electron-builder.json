@@ -1,0 +1,18 @@
+{
+    "appId": "com.daemonw.fwf",
+    "copyright": "Csongor Zih, MIT license",
+    "asar": true,
+    "asarUnpack": [
+        "bin"
+    ],
+    "mac": {
+        "target": "dir",
+        "files": [
+            "bin/darwin"
+        ]
+    },
+    "files": [
+        "**/*",
+        "!bin"
+    ]
+}
