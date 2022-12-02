@@ -10,22 +10,93 @@
                controls>
         </video>
         <div class="input-group" style="color: black; margin-top: 20px">
-            <input type="checkbox" id="escalar" value="Escalar video" aria-label="Checkbox for following text input">Escalar video<br>
-            <input type="checkbox" id="bitrate" aria-label="Checkbox for following text input">Modificar el bitrate<br>
-            <input type="checkbox" id="velocitat" aria-label="Checkbox for following text input">Canviar velocitat<br><br>
+            <input type="checkbox" id="escalar-toggle" value="Escalar video" aria-label="Checkbox for following text input" onclick="display_escalar_option()">Escalar video<br>
+            <input type="checkbox" id="bitrate-toggle" aria-label="Checkbox for following text input" onclick="display_bitrate_option()">Modificar el bitrate<br>
+            <input type="checkbox" id="velocitat-toggle" aria-label="Checkbox for following text input" onclick="display_velocitat_option()">Canviar velocitat<br><br>
+        </div>
+        <div class="options">
+            <select class="options-escalar" id="stageEscalar" style ="display:none">
+                <option value="0.25">16:9</option>
+                <option value="0.5">1:1</option>
+                <option value="0.75">4:5</option>
+                <option value="1" selected>9:16</option>
+                <option value="1.25">16:9</option>
+            </select>
+
+            <select class="options-bitrate" id="stageBitrate" style ="display:none">
+                <option value="0.25">800kbps</option>
+                <option value="0.5">1200kbps</option>
+                <option value="0.75">1500kbps</option>
+                <option value="1.25">2000kbps</option>
+                <option value="1.5">3000kbps</option>
+                <option value="1.75">4000kbps</option>
+                <option value="1" selected>6000kbps</option>
+                <option value="2">8000kbps</option>
+            </select>
+
+            <select class="options-velocitat" id="stageVelocitat" style ="display:none">
+                <option value="0.25">0.25</option>
+                <option value="0.5">0.5</option>
+                <option value="0.75">0.75</option>
+                <option value="1" selected>Normal</option>
+                <option value="1.25">1.25</option>
+                <option value="1.5">1.5</option>
+                <option value="1.75">1.75</option>
+                <option value="2">2</option>
+            </select>
         </div>
         <button class="btn btn-primary" id="edita" onclick="edit()">Edita</button>
 </body>
 <script>
-    async function edit() {
-        const body = {
-            escalar: document.getElementById('escalar').checked,
-            bitrate: document.getElementById('bitrate').checked,
-            velocitat: document.getElementById('velocitat').checked
+    function display_velocitat_option() {
+        // Get the checkbox
+        var checkBox = document.getElementById("velocitat-toggle");
+        // Get the output text
+        var opt = document.getElementById("stageVelocitat");
+
+        // If the checkbox is checked, display the output text
+        if (checkBox.checked == true){
+            opt.style.display = "block";
+        } else {
+            opt.style.display = "none";
         }
+    }
+
+    function display_bitrate_option() {
+        // Get the checkbox
+        var checkBox = document.getElementById("bitrate-toggle");
+        // Get the output text
+        var opt = document.getElementById("stageBitrate");
+
+        // If the checkbox is checked, display the output text
+        if (checkBox.checked == true){
+            opt.style.display = "block";
+        } else {
+            opt.style.display = "none";
+        }
+    }
+
+    function display_escalar_option() {
+        // Get the checkbox
+        var checkBox = document.getElementById("escalar-toggle");
+        // Get the output text
+        var opt = document.getElementById("stageEscalar");
+
+        // If the checkbox is checked, display the output text
+        if (checkBox.checked == true){
+            opt.style.display = "block";
+        } else {
+            opt.style.display = "none";
+        }
+    }
+    async function edit() {
         await fetch("/edit", {
             method: 'POST',
-            body: JSON.stringify(body),
+            body: JSON.stringify({
+                escalar: document.getElementById('escalar-toggle').checked,
+                bitrate: document.getElementById('bitrate-toggle').checked,
+                velocitat: document.getElementById('velocitat').checked
+            }),
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'

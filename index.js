@@ -82,9 +82,9 @@ app.get('/videoplayer' , (req, res) => {
     stream.pipe(res)
 });
 app.post('/edit', (req, res) => {
-    console.log(req.body)
+    const path = `videos/${req.session.video}`
     if (req.body.escalar){
-        ffmpeg('videos/input.mp4') //Input Video File
+        ffmpeg(path) //Input Video File
             .output('videos/output.mp4') // Output File
             .audioCodec('libmp3lame') // Audio Codec
             .videoCodec('libx264') // Video Codec
@@ -101,7 +101,7 @@ app.post('/edit', (req, res) => {
             }).run();
     }
     if (req.body.bitrate){
-        ffmpeg(`./videos/${req.session.video}`)
+        ffmpeg(path)
             .audioCodec('libmp3lame') // Audio Codec
             .videoCodec('libx264')
             .videoFilters('fade=in:0:200')
@@ -119,7 +119,7 @@ app.post('/edit', (req, res) => {
             }).run();
     }
     if (req.body.velocitat){
-        ffmpeg(`./videos/${req.session.video}`)
+        ffmpeg(path)
             .audioCodec('libmp3lame') // Audio Codec
             .videoCodec('libx264')
             .videoFilters('fade=in:0:200')
