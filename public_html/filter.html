@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Editor</title>
@@ -46,6 +46,8 @@
             </select>
         </div>
         <button class="btn btn-primary" id="edita" onclick="edit()">Edita</button>
+        <button class="btn btn-primary" id="descarregar" onclick="descarregar()">Descarregar</button>
+
 </body>
 <script>
     function display_velocitat_option() {
@@ -90,19 +92,42 @@
         }
     }
     async function edit() {
+        var checkBox_escalar = document.getElementById("escalar-toggle");
+        var opt_escalar = document.getElementById("stageEscalar");
+        var checkBox_bitrate = document.getElementById("bitrate-toggle");
+        var opt_bitrate = document.getElementById("stageBitrate");
+        var checkBox_velocitat = document.getElementById("velocitat-toggle");
+        var opt_velocitat = document.getElementById("stageVelocitat");
+
+        var escalar,bitrate, velocitat = null
+
+        if (checkBox_bitrate.checked){
+            bitrate = opt_bitrate.value
+        }
+        if (checkBox_escalar.checked){
+            escalar = opt_escalar.value
+        }
+        if (checkBox_velocitat.checked){
+            velocitat = opt_velocitat.value
+        }
         await fetch("/edit", {
             method: 'POST',
             body: JSON.stringify({
-                escalar: document.getElementById('escalar-toggle').checked,
-                bitrate: document.getElementById('bitrate-toggle').checked,
-                velocitat: document.getElementById('velocitat').checked
+                escalar: escalar,
+                bitrate: bitrate,
+                velocitat: velocitat
             }),
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
         })
-        window.location.href = 'final_dowload.html'
+    }
+
+    async function descarregar(){
+        await fetch("/download", {
+            method: 'GET'
+        })
     }
 </script>
 <!-- CSS only -->

@@ -31,33 +31,39 @@ app.use(session({
 
 app.get('/download' , async (req, res, next) => {
     var link = req.query.url
+    if (link){
+        const urlObject = new URL(link);
 
-    const urlObject = new URL(link);
+        const hostName = urlObject.hostname;
 
-    const hostName = urlObject.hostname;
+        if (hostName == 'www.dropbox.com'){
+            var firstPart = link.split("=")[0];
+            link = firstPart + '=1';
+        }
 
-    if (hostName == 'www.dropbox.com'){
-        var firstPart = link.split("=")[0];
-        link = firstPart + '=1';
-    }
+        const filePath = `${__dirname}/videos`;
+        await download(link,filePath)
+            .then((res) => {
 
-    const filePath = `${__dirname}/videos`;
-    await download(link,filePath)
-        .then((res) => {
-
-            var ls=fs.readdirSync(`${__dirname}/videos`);
-            for (let index = 0; index < ls.length; index++) {
-                if (link.includes(ls[index])) {
-                    if(!ls[index].includes("mp4") && !ls[index].includes("avi")) {
-                        next(new Error('Aquesta extensio no esta permesa'))
+                var ls=fs.readdirSync(`${__dirname}/videos`);
+                for (let index = 0; index < ls.length; index++) {
+                    if (link.includes(ls[index])) {
+                        if(!ls[index].includes("mp4") && !ls[index].includes("avi")) {
+                            next(new Error('Aquesta extensio no esta permesa'))
+                        }
+                        req.session.video = ls[index]
                     }
-                    req.session.video = ls[index]
                 }
-            }
-            console.log('Download Completed');
-        })
-    res.sendFile(`${__dirname}/public_html/filter.html` );
+                console.log('Download Completed');
+            })
+        res.sendFile(`${__dirname}/public_html/filter.html` );
 
+    }
+    else {
+        const path = `${__dirname}/videos/${req.session.video}`
+        res.attachment(path).send();
+        console.log(path)
+    }
 });
 app.get('/videoplayer' , (req, res) => {
     const range = req.headers.range
@@ -85,15 +91,16 @@ app.post('/edit', (req, res) => {
     const path = `videos/${req.session.video}`
     if (req.body.escalar){
         ffmpeg(path) //Input Video File
-            .output('videos/output.mp4') // Output File
+            .output(path) // Output File
             .audioCodec('libmp3lame') // Audio Codec
             .videoCodec('libx264') // Video Codec
             .setStartTime(03) // Start Position
             .setDuration(5) // Duration
             .on('end', function (err) {
                 if (!err) {
+
                     console.log("Conversion Done");
-                    res.send('Video Cropping Done');
+                    // res.send('Video Cropping Done');
                 }
             })
             .on('error', function (err) {
@@ -109,7 +116,8 @@ app.post('/edit', (req, res) => {
 
             .on('end', function (err) {
                 if (!err)
-                    res.send("Succesful");
+                    console.log("Succesful")
+                    // res.send("Succesful");
             })
             .on('progress', function (data) {
                 console.log(data.percent);
@@ -124,10 +132,9 @@ app.post('/edit', (req, res) => {
             .videoCodec('libx264')
             .videoFilters('fade=in:0:200')
             .output('videos/fadein.mp4')
-
             .on('end', function (err) {
                 if (!err)
-                    res.send("Succesful");
+                    console.log("Succesful")
             })
             .on('progress', function (data) {
                 console.log(data.percent);
