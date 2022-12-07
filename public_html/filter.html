@@ -46,7 +46,9 @@
             </select>
         </div>
         <button class="btn btn-primary" id="edita" onclick="edit()">Edita</button>
-        <button class="btn btn-primary" id="descarregar" onclick="descarregar()">Descarregar</button>
+        <a href="/download">
+            <button class="btn btn-primary" id="descarregar">Descarregar</button>
+        </a>
 
 </body>
 <script>
@@ -121,12 +123,6 @@
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-        })
-    }
-
-    async function descarregar(){
-        await fetch("/download", {
-            method: 'GET'
         })
     }
 </script>

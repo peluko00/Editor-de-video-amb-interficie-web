@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 const http = require('http');
-const download = require('download');
+let download = require('download');
 const server = http.createServer(app);
 const fs = require('fs');
 var ffmpeg = require('fluent-ffmpeg');
@@ -29,42 +29,47 @@ app.use(session({
     }
 }));
 
-app.get('/download' , async (req, res, next) => {
+app.get('/save' , async (req, res, next) => {
     var link = req.query.url
-    if (link){
-        const urlObject = new URL(link);
+    const urlObject = new URL(link);
 
-        const hostName = urlObject.hostname;
+    const hostName = urlObject.hostname;
 
-        if (hostName == 'www.dropbox.com'){
-            var firstPart = link.split("=")[0];
-            link = firstPart + '=1';
-        }
+    if (hostName == 'www.dropbox.com'){
+        var firstPart = link.split("=")[0];
+        link = firstPart + '=1';
+    }
 
-        const filePath = `${__dirname}/videos`;
-        await download(link,filePath)
-            .then((res) => {
+    const filePath = `${__dirname}/videos`;
+    await download(link,filePath)
+        .then((res) => {
 
-                var ls=fs.readdirSync(`${__dirname}/videos`);
-                for (let index = 0; index < ls.length; index++) {
-                    if (link.includes(ls[index])) {
-                        if(!ls[index].includes("mp4") && !ls[index].includes("avi")) {
-                            next(new Error('Aquesta extensio no esta permesa'))
-                        }
-                        req.session.video = ls[index]
+            var ls=fs.readdirSync(`${__dirname}/videos`);
+            for (let index = 0; index < ls.length; index++) {
+                if (link.includes(ls[index])) {
+                    if(!ls[index].includes("mp4") && !ls[index].includes("avi")) {
+                        next(new Error('Aquesta extensio no esta permesa'))
                     }
+                    req.session.video = ls[index]
                 }
-                console.log('Download Completed');
-            })
-        res.sendFile(`${__dirname}/public_html/filter.html` );
+            }
+            console.log('Download Completed');
+        })
+    res.sendFile(`${__dirname}/public_html/filter.html` );
 
-    }
-    else {
-        const path = `${__dirname}/videos/${req.session.video}`
-        res.attachment(path).send();
-        console.log(path)
-    }
 });
+
+app.get('/download' , async (req, res, next) => {
+    const path = `${__dirname}/videos/${req.session.video}`
+    res.download(path , (err) => {
+        if (err) {
+            res.status(500).send({
+                message: "Could not download the file. " + err,
+            });
+        }
+    });
+});
+
 app.get('/videoplayer' , (req, res) => {
     const range = req.headers.range
     const videoPath = `./videos/${req.session.video}`;
@@ -87,6 +92,7 @@ app.get('/videoplayer' , (req, res) => {
     })
     stream.pipe(res)
 });
+
 app.post('/edit', (req, res) => {
     const path = `videos/${req.session.video}`
     if (req.body.escalar){
@@ -127,10 +133,11 @@ app.post('/edit', (req, res) => {
             }).run();
     }
     if (req.body.velocitat){
+        console.log('hola')
         ffmpeg(path)
             .audioCodec('libmp3lame') // Audio Codec
             .videoCodec('libx264')
-            .videoFilters('fade=in:0:200')
+            .videoFilters(`setpts=${req.body.velocitat}`)
             .output('videos/fadein.mp4')
             .on('end', function (err) {
                 if (!err)
