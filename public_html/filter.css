@@ -1,29 +1,18 @@
-
-form,
-.header {
-    width: 900px;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border: 2px dotted blue;
-}
 input{
     width: 75px;
     height: 20px;
     border-radius: 3px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 7px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    display: block;
     border: 2px solid blue;
 }
-button {
+a,button{
     width: 175px;
     height: 40px;
     border-radius: 3px;
-    display: relative;
+    display: none;
     align-items: center;
     justify-content: center;
     margin-top: 7px;
@@ -33,34 +22,20 @@ button {
 label {
     padding: 10px;
 }
-
+div.center{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
 video {
-    width: 600px;
-    height: 400px;
+    width: 800px;
+    height: 600px;
     margin-top: 10px;
 }
 
-input:focus{
-    outline: none;
-    border: 3px dotted orange;
-}
-
 .options {
-    width:40%;
-    height:25px;
-    display: flex;
-    top: 2px;
-    margin-bottom: 20px;
-}
-
-.options-escalar{
-    margin-left: 75px;
-}
-
-.options-bitrate{
-    margin-left: 90px;
-}
-
-.options-velocitat{
-    margin-left: 130px;
+    width:20%;
+    height:30px;
+    display: inline-block;
 }

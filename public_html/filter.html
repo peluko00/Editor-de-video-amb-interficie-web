@@ -3,53 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <title>Editor</title>
-
+    <link rel="stylesheet" href="filter.css">
 </head>
 <body>
-        <video src="/videoplayer" width="1080px"
-               controls>
-        </video>
-        <div class="input-group" style="color: black; margin-top: 20px">
+    <div class="center">
+        <h2 id="h2" style="margin-top: 20px">Aplica els filtres que vulguis</h2>
+        <video src="/videoplayer" controls></video>
+        <div id="input-group" class="input-group" style="color: black; margin-top: 20px">
             <input type="checkbox" id="escalar-toggle" value="Escalar video" aria-label="Checkbox for following text input" onclick="display_escalar_option()">Escalar video<br>
-            <input type="checkbox" id="bitrate-toggle" aria-label="Checkbox for following text input" onclick="display_bitrate_option()">Modificar el bitrate<br>
+            <input type="checkbox" id="volum-toggle" aria-label="Checkbox for following text input" onclick="display_volum_option()">Modificar el volum<br>
             <input type="checkbox" id="velocitat-toggle" aria-label="Checkbox for following text input" onclick="display_velocitat_option()">Canviar velocitat<br><br>
         </div>
-        <div class="options">
-            <select class="options-escalar" id="stageEscalar" style ="display:none">
-                <option value="0.25">16:9</option>
-                <option value="0.5">1:1</option>
-                <option value="0.75">4:5</option>
-                <option value="1" selected>9:16</option>
-                <option value="1.25">16:9</option>
-            </select>
-
-            <select class="options-bitrate" id="stageBitrate" style ="display:none">
-                <option value="0.25">800kbps</option>
-                <option value="0.5">1200kbps</option>
-                <option value="0.75">1500kbps</option>
-                <option value="1.25">2000kbps</option>
-                <option value="1.5">3000kbps</option>
-                <option value="1.75">4000kbps</option>
-                <option value="1" selected>6000kbps</option>
-                <option value="2">8000kbps</option>
-            </select>
-
-            <select class="options-velocitat" id="stageVelocitat" style ="display:none">
-                <option value="0.25">0.25</option>
-                <option value="0.5">0.5</option>
-                <option value="0.75">0.75</option>
-                <option value="1" selected>Normal</option>
-                <option value="1.25">1.25</option>
-                <option value="1.5">1.5</option>
-                <option value="1.75">1.75</option>
-                <option value="2">2</option>
-            </select>
+        <div class="options" id="options">
+            <div class="form-floating">
+                <select class="form-select" id="stageEscalar" style ="display:none">
+                    <option value="1920:1080">1920×1080</option>
+                    <option value="1280:720">1280×720</option>
+                    <option value="854:480" selected>854×480</option>
+                    <option value="640:360">640×360</option>
+                    <option value="426:240">426×240</option>
+                </select>
+                    <label id="labelescalar" for="stageEscalar" style ="display:none">Escull el tamany a escalar</label>
+            </div>
+            <div class="form-floating">
+                <select class="form-select" id="stageVelocitat" style ="display:none">
+                    <option value="1.75">0.25</option>
+                    <option value="1.5">0.5</option>
+                    <option value="1.25">0.75</option>
+                    <option value="1" selected>Normal</option>
+                    <option value="0.75">1.25</option>
+                    <option value="0.5">1.5</option>
+                    <option value="0.25">1.75</option>
+                </select>
+                <label id="labelvelocitat" for="stageVelocitat" style ="display:none">Tria la velocitat</label>
+            </div>
+            <div class="form-floating">
+                <select class="form-select" id="stageVolum" style ="display:none">
+                    <option value="0">Mutejar</option>
+                    <option value="0.5">Meitat</option>
+                    <option value="1" selected>Normal</option>
+                    <option value="2">Doble</option>
+                </select>
+                    <label id="labelvolum" for="stageVolum" style ="display:none">Tria el volum que vols</label>
+            </div>
         </div>
         <button class="btn btn-primary" id="edita" onclick="edit()">Edita</button>
-        <a href="/download">
+        <a href="/download" id="download">
             <button class="btn btn-primary" id="descarregar">Descarregar</button>
         </a>
-
+    </div>
 </body>
 <script>
     function display_velocitat_option() {
@@ -57,26 +59,15 @@
         var checkBox = document.getElementById("velocitat-toggle");
         // Get the output text
         var opt = document.getElementById("stageVelocitat");
+        var label = document.getElementById("labelvelocitat");
 
         // If the checkbox is checked, display the output text
-        if (checkBox.checked == true){
+        if (checkBox.checked){
             opt.style.display = "block";
+            label.style.display = "block"
         } else {
             opt.style.display = "none";
-        }
-    }
-
-    function display_bitrate_option() {
-        // Get the checkbox
-        var checkBox = document.getElementById("bitrate-toggle");
-        // Get the output text
-        var opt = document.getElementById("stageBitrate");
-
-        // If the checkbox is checked, display the output text
-        if (checkBox.checked == true){
-            opt.style.display = "block";
-        } else {
-            opt.style.display = "none";
+            label.style.display = "none"
         }
     }
 
@@ -85,26 +76,51 @@
         var checkBox = document.getElementById("escalar-toggle");
         // Get the output text
         var opt = document.getElementById("stageEscalar");
+        var label = document.getElementById("labelescalar");
 
         // If the checkbox is checked, display the output text
-        if (checkBox.checked == true){
+        if (checkBox.checked){
             opt.style.display = "block";
+            label.style.display = "block"
         } else {
             opt.style.display = "none";
+            label.style.display = "none"
+        }
+    }
+    function display_volum_option() {
+        // Get the checkbox
+        var checkBox = document.getElementById("volum-toggle");
+        // Get the output text
+        var opt = document.getElementById("stageVolum");
+        var label = document.getElementById("labelvolum");
+
+        // If the checkbox is checked, display the output text
+        if (checkBox.checked){
+            opt.style.display = "block";
+            label.style.display = "block"
+        } else {
+            opt.style.display = "none";
+            label.style.display = "none"
         }
     }
     async function edit() {
-        var checkBox_escalar = document.getElementById("escalar-toggle");
-        var opt_escalar = document.getElementById("stageEscalar");
-        var checkBox_bitrate = document.getElementById("bitrate-toggle");
-        var opt_bitrate = document.getElementById("stageBitrate");
-        var checkBox_velocitat = document.getElementById("velocitat-toggle");
-        var opt_velocitat = document.getElementById("stageVelocitat");
+        const checkBox_escalar = document.getElementById("escalar-toggle");
+        const opt_escalar = document.getElementById("stageEscalar");
+        const checkBox_volum = document.getElementById("volum-toggle");
+        const opt_volum = document.getElementById("stageVolum");
+        const checkBox_velocitat = document.getElementById("velocitat-toggle");
+        const opt_velocitat = document.getElementById("stageVelocitat");
+        const download = document.getElementById("download");
+        const editar = document.getElementById("edita");
+        const labelEscalar = document.getElementById("labelescalar");
+        const labelVelocitat = document.getElementById("labelvelocitat");
+        const labelVolum = document.getElementById("labelvolum");
+        const input_group = document.getElementById("input-group");
+        const h2 = document.getElementById("h2");
+        let escalar, volum, velocitat = null;
 
-        var escalar,bitrate, velocitat = null
-
-        if (checkBox_bitrate.checked){
-            bitrate = opt_bitrate.value
+        if (checkBox_volum.checked){
+            volum = opt_volum.value
         }
         if (checkBox_escalar.checked){
             escalar = opt_escalar.value
@@ -112,17 +128,29 @@
         if (checkBox_velocitat.checked){
             velocitat = opt_velocitat.value
         }
+        opt_velocitat.style.display = 'none'
+        opt_escalar.style.display = 'none'
+        opt_volum.style.display = 'none'
+        download.style.display = 'inline-block'
+        editar.style.display = 'none'
+        labelEscalar.style.display = 'none'
+        labelVelocitat.style.display = 'none'
+        labelVolum.style.display = 'none'
+        input_group.style.display = 'none'
+        h2.innerHTML = 'Descarrega el teu video'
         await fetch("/edit", {
             method: 'POST',
             body: JSON.stringify({
                 escalar: escalar,
-                bitrate: bitrate,
+                volum: volum,
                 velocitat: velocitat
             }),
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
+        }).then(() => {
+            console.log('hola')
         })
     }
 </script>

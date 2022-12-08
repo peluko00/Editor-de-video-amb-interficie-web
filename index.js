@@ -4,7 +4,7 @@ const http = require('http');
 let download = require('download');
 const server = http.createServer(app);
 const fs = require('fs');
-var ffmpeg = require('fluent-ffmpeg');
+const ffmpeg = require('fluent-ffmpeg');
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -29,21 +29,29 @@ app.use(session({
     }
 }));
 
+
+function change_name(path){
+    fs.unlinkSync(`${__dirname}/videos/${path}`)
+    fs.rename(`${__dirname}/videos/-edit-${path}`,
+        `${__dirname}/videos/${path}`, err => {
+        if ( err ) console.log('ERROR: ' + err);
+        console.log('Name changed')
+    })
+}
+
+
 app.get('/save' , async (req, res, next) => {
     var link = req.query.url
     const urlObject = new URL(link);
-
     const hostName = urlObject.hostname;
 
     if (hostName == 'www.dropbox.com'){
         var firstPart = link.split("=")[0];
         link = firstPart + '=1';
     }
-
     const filePath = `${__dirname}/videos`;
     await download(link,filePath)
         .then((res) => {
-
             var ls=fs.readdirSync(`${__dirname}/videos`);
             for (let index = 0; index < ls.length; index++) {
                 if (link.includes(ls[index])) {
@@ -56,7 +64,6 @@ app.get('/save' , async (req, res, next) => {
             console.log('Download Completed');
         })
     res.sendFile(`${__dirname}/public_html/filter.html` );
-
 });
 
 app.get('/download' , async (req, res, next) => {
@@ -67,6 +74,7 @@ app.get('/download' , async (req, res, next) => {
                 message: "Could not download the file. " + err,
             });
         }
+        console.log('Download Completed');
     });
 });
 
@@ -95,35 +103,35 @@ app.get('/videoplayer' , (req, res) => {
 
 app.post('/edit', (req, res) => {
     const path = `videos/${req.session.video}`
+    const output = `videos/-edit-${req.session.video}`;
     if (req.body.escalar){
         ffmpeg(path) //Input Video File
-            .output(path) // Output File
-            .audioCodec('libmp3lame') // Audio Codec
+            .output(output) // Output File
             .videoCodec('libx264') // Video Codec
-            .setStartTime(03) // Start Position
-            .setDuration(5) // Duration
+            .videoFilters(`scale=${req.body.escalar}`)
+            .on('progress', function (data) {
+                console.log(data.percent);
+            })
             .on('end', function (err) {
                 if (!err) {
-
                     console.log("Conversion Done");
-                    // res.send('Video Cropping Done');
+                    change_name(req.session.video)
                 }
             })
             .on('error', function (err) {
-                console.log('error: ', +err);
+                console.log('error: ' + err);
             }).run();
-    }
-    if (req.body.bitrate){
-        ffmpeg(path)
-            .audioCodec('libmp3lame') // Audio Codec
-            .videoCodec('libx264')
-            .videoFilters('fade=in:0:200')
-            .output('videos/fadein.mp4')
 
+    }
+    if (req.body.volum){
+        ffmpeg(path)
+            .videoCodec('libx264')
+            .audioFilters(`volume=${req.body.volum}`)
+            .output(output)
             .on('end', function (err) {
                 if (!err)
-                    console.log("Succesful")
-                    // res.send("Succesful");
+                    console.log("Conversion Done")
+                    change_name(req.session.video)
             })
             .on('progress', function (data) {
                 console.log(data.percent);
@@ -133,15 +141,16 @@ app.post('/edit', (req, res) => {
             }).run();
     }
     if (req.body.velocitat){
-        console.log('hola')
+        console.log(req.body.velocitat)
         ffmpeg(path)
             .audioCodec('libmp3lame') // Audio Codec
             .videoCodec('libx264')
-            .videoFilters(`setpts=${req.body.velocitat}`)
-            .output('videos/fadein.mp4')
+            .videoFilters(`setpts=${req.body.velocitat}*PTS`)
+            .output(output)
             .on('end', function (err) {
                 if (!err)
-                    console.log("Succesful")
+                    console.log("Conversion Done")
+                    change_name(req.session.video)
             })
             .on('progress', function (data) {
                 console.log(data.percent);
