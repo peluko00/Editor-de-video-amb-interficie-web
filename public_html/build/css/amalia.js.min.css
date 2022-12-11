@@ -57,6 +57,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details
  */
+
 @keyframes ajs-hatch {
   0% {
     transform: rotate(0deg) scaleY(0.6); }
@@ -2162,6 +2163,12 @@
           color: #6c6c6c;
           font-size: 20px;
           padding: 0; }
+
+
+  .ajs-plugin.plugin-timeline .module-nav-bar-container {
+    display: none;
+  }
+
   .ajs-plugin.plugin-timeline .module-nav-bar-container .info {
     padding-left: 15px;
     line-height: 30px; }
