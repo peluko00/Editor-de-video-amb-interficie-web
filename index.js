@@ -46,10 +46,28 @@ function change_name(path){
     }
 
 }
+const multer = require("multer");
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, `${__dirname}/videos`)
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '-' + file.originalname)
+    },
+})
+const upload = multer({ storage: storage })
 
 
-app.get('/save' , async (req, res, next) => {
-    var link = req.query.url
+app.post('/upload', upload.single("my-video"), async (req, res, next) => {
+    console.log(`Video uploaded: ${req.file.filename}`)
+    req.session.video = req.file.filename
+    res.sendFile(`${__dirname}/public_html/filter.html`);
+})
+
+app.post('/save' , async (req, res, next) => {
+    let link = req.body.url
+    console.log(req.body)
     const urlObject = new URL(link);
     const hostName = urlObject.hostname;
 
@@ -72,7 +90,6 @@ app.get('/save' , async (req, res, next) => {
             console.log('Download Completed');
         })
     res.sendFile(`${__dirname}/public_html/filter.html`);
-
 });
 
 app.get('/download' , async (req, res, next) => {
