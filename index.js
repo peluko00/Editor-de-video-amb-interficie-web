@@ -31,31 +31,57 @@ app.use(session({
 
 
 function change_name(path){
-    fs.unlinkSync(`${__dirname}/videos/${path}`)
-    fs.rename(`${__dirname}/videos/-edit-${path}`,
-        `${__dirname}/videos/${path}`, err => {
-        if ( err ) console.log('ERROR: ' + err);
-        console.log('Name changed')
-    })
+    const ls=fs.readdirSync(`${__dirname}/videos`);
+    for (let i = 0; i < ls.length; i++) {
+        console.log('-----path', ls[i])
+        if(ls[i] === path) fs.unlinkSync(`${__dirname}/videos/${path}`)
+    }
+    for (let j = 0; j < ls.length; j++) {
+        if(ls[j] === `-edit-${path}`)
+            fs.rename(`${__dirname}/videos/${ls[j]}`,
+                `${__dirname}/videos/${path}`, err => {
+                    if ( err ) console.log('ERROR: ' + err);
+                    console.log('Name changed')
+            })
+    }
+
 }
+const multer = require("multer");
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, `${__dirname}/videos`)
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '-' + file.originalname)
+    },
+})
+const upload = multer({ storage: storage })
 
 
-app.get('/save' , async (req, res, next) => {
-    var link = req.query.url
+app.post('/upload', upload.single("my-video"), async (req, res, next) => {
+    console.log(`Video uploaded: ${req.file.filename}`)
+    req.session.video = req.file.filename
+    res.sendFile(`${__dirname}/public_html/filter.html`);
+})
+
+app.post('/save' , async (req, res, next) => {
+    let link = req.body.url
+    console.log(req.body)
     const urlObject = new URL(link);
     const hostName = urlObject.hostname;
 
-    if (hostName == 'www.dropbox.com'){
+    if (hostName == 'www.dropbox.com') {
         var firstPart = link.split("=")[0];
         link = firstPart + '=1';
     }
     const filePath = `${__dirname}/videos`;
-    await download(link,filePath)
+    await download(link, filePath)
         .then((res) => {
-            var ls=fs.readdirSync(`${__dirname}/videos`);
+            var ls = fs.readdirSync(`${__dirname}/videos`);
             for (let index = 0; index < ls.length; index++) {
                 if (link.includes(ls[index])) {
-                    if(!ls[index].includes("mp4") && !ls[index].includes("avi")) {
+                    if (!ls[index].includes("mp4") && !ls[index].includes("avi")) {
                         next(new Error('Aquesta extensio no esta permesa'))
                     }
                     req.session.video = ls[index]
@@ -63,7 +89,7 @@ app.get('/save' , async (req, res, next) => {
             }
             console.log('Download Completed');
         })
-    res.sendFile(`${__dirname}/public_html/filter.html` );
+    res.sendFile(`${__dirname}/public_html/filter.html`);
 });
 
 app.get('/download' , async (req, res, next) => {
@@ -101,11 +127,11 @@ app.get('/videoplayer' , (req, res) => {
     stream.pipe(res)
 });
 
-app.post('/edit', (req, res) => {
-    const path = `videos/${req.session.video}`
-    const output = `videos/-edit-${req.session.video}`;
+app.post('/edit', async (req, res) => {
+    const path = `${__dirname}/videos/${req.session.video}`
+    const output = `${__dirname}/videos/-edit-${req.session.video}`;
     if (req.body.escalar){
-        ffmpeg(path) //Input Video File
+        await ffmpeg(path) //Input Video File
             .output(output) // Output File
             .videoCodec('libx264') // Video Codec
             .videoFilters(`scale=${req.body.escalar}`)
@@ -114,53 +140,54 @@ app.post('/edit', (req, res) => {
             })
             .on('end', function (err) {
                 if (!err) {
+                    change_name(req.session.video)
                     console.log("Conversion Done");
-                    change_name(req.session.video)
-                }
-            })
-            .on('error', function (err) {
-                console.log('error: ' + err);
-            }).run();
+                    if (req.body.volum){
+                        ffmpeg(path)
+                            .videoCodec('libx264')
+                            .audioFilters(`volume=${req.body.volum}`)
+                            .output(output)
+                            .on('end', function (err) {
+                                if (!err){
+                                    change_name(req.session.video)
+                                    console.log("Conversion Done")
+                                    if (req.body.velocitat){
+                                        ffmpeg(path)
+                                            .audioCodec('libmp3lame') // Audio Codec
+                                            .videoCodec('libx264')
+                                            .videoFilters(`setpts=${req.body.velocitat}*PTS`)
+                                            .output(output)
+                                            .on('end', function (err) {
+                                                if (!err){
+                                                    change_name(req.session.video)
+                                                    console.log("Conversion Done")
+                                                }
+                                            })
+                                            .on('progress', function (data) {
+                                                console.log(data.percent);
+                                            })
+                                            .on('error', function (err) {
+                                                console.log('error: ' + err);
+                                            }).run();
+                                    }
+                                }
 
-    }
-    if (req.body.volum){
-        ffmpeg(path)
-            .videoCodec('libx264')
-            .audioFilters(`volume=${req.body.volum}`)
-            .output(output)
-            .on('end', function (err) {
-                if (!err)
-                    console.log("Conversion Done")
-                    change_name(req.session.video)
-            })
-            .on('progress', function (data) {
-                console.log(data.percent);
-            })
-            .on('error', function (err) {
-                console.log('error: ' + err);
-            }).run();
-    }
-    if (req.body.velocitat){
-        console.log(req.body.velocitat)
-        ffmpeg(path)
-            .audioCodec('libmp3lame') // Audio Codec
-            .videoCodec('libx264')
-            .videoFilters(`setpts=${req.body.velocitat}*PTS`)
-            .output(output)
-            .on('end', function (err) {
-                if (!err)
-                    console.log("Conversion Done")
-                    change_name(req.session.video)
-            })
-            .on('progress', function (data) {
-                console.log(data.percent);
+                            })
+                            .on('progress', function (data) {
+                                console.log(data.percent);
+                            })
+                            .on('error', function (err) {
+                                console.log('error: ' + err);
+                            }).run();
+                    }
+
+                }
             })
             .on('error', function (err) {
                 console.log('error: ' + err);
             }).run();
     }
 })
-
 
 
 server.listen(3000, () => {

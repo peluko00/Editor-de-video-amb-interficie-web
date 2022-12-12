@@ -7,16 +7,55 @@
 </head>
 <body>
 <div class="form">
-    <form method="get" action="/save" >
+    <form id="my-form">
         <h1 style=" display: flex; justify-content: center;">Personalitza i edita els teus videos</h1>
         <label> Puja el teu video:<br/>
-            <input type="url" name="url" id="url" placeholder="https://example.com/" size="30" style="margin-top: 20px" required>
+            <input type="url" name="url" id="url" placeholder="https://exemple.com/" size="30" style="margin-top: 20px">
         </label>
-        <button type="btn btn-primary" class="btn btn-outline-primary" style="width: 50%; margin-top: 20px; position: relative" id="boto">Puja</button>
+        <div class="input-group">
+            <label for='file'>Selecciona el teu video</label>
+            <input id='file' type="file" accept="video/mp4,video/x-m4v,video/*" name="my-video">
+        </div>
     </form>
+    <button type="btn btn-primary" onclick="submitForm()" class="btn btn-outline-primary" style="width: 50%; margin-top: 20px; position: relative" id="boto">Puja</button>
 </div>
 <script>
+    async function submitForm() {
+        const url = document.getElementById('url').value
+        const file = document.getElementById('file').value
+        if(url && file){
+            alert('No es poden pujar dos videos!')
+        }
+        else if(!url && !file){
+            alert('Introdueix una url o puja un fitxer desde el teu ordinador')
+        }
+        else if(url){
+            console.log(url)
+            await fetch("/save", {
+                method: 'POST',
+                body: JSON.stringify({
+                    url: url
+                }),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then((res) =>  window.location.href = "filter.html")
+                .catch((err) => ("Error occured", err));
+        }
+        else {
+            const form = document.querySelector('#my-form');
+            const formData = new FormData(form);
+            await fetch("/upload", {
+                method: 'POST',
+                body: formData
+            })
+                .then((res) => window.location.href = "filter.html")
+                .catch((err) => ("Error occured", err));
+        }
 
+    }
 </script>
 <!-- CSS only -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">

@@ -5,28 +5,21 @@
     <title>Editor</title>
     <link rel="stylesheet" href="filter.css">
     <script src="./bower_components/jquery/dist/jquery.js"></script>
-    <script src="./bower_components/jquery-ui/jquery-ui.min.js"></script>        
+    <script src="./bower_components/jquery-ui/jquery-ui.min.js"></script>
     <script src="./bower_components/raphael/raphael.js"></script>
-    <!-- style-player -->        
     <link href="./build/css/amalia.js.min.css" rel="stylesheet">
-    <!-- /style-player -->        
-    <!-- script-player -->        
     <script src="./build/js/amalia.js.min.js"></script>
-    <script src="./build/js/amalia.js-plugin-timeline.min.js"></script>        
-    <!-- /script-player -->
+    <script src="./build/js/amalia.js-plugin-timeline.min.js"></script>
 </head>
 <body>
     <div class="center">
-        <h2 id="h2" style="margin-top: 20px">Aplica els filtres que vulguis</h2>
-        
-        
-        
-        <div style= "height: 480px;">
-            <div id="defaultPlayer"></div>
+        <h2 id="h2" style="margin-top: 20px">Aplica filtres al teu video</h2>
+        <div class="demo">
+            <div style="height: 400px;">
+                <div id="defaultPlayer"></div>
+            </div>
+            <div id="timeline"></div>
         </div>
-        
-        <div id="timeline"></div>
-
         <div id="input-group" class="input-group" style="color: black; margin-top: 20px">
             <input type="checkbox" id="escalar-toggle" value="Escalar video" aria-label="Checkbox for following text input" onclick="display_escalar_option()">Escalar video<br>
             <input type="checkbox" id="volum-toggle" aria-label="Checkbox for following text input" onclick="display_volum_option()">Modificar el volum<br>
@@ -72,41 +65,37 @@
     </div>
 </body>
 <script>
-
     $( function () {
         $( "#defaultPlayer" ).mediaPlayer( {
             autoplay : false,
             src : "/videoplayer",
             controlBar :
-            {
-                sticky : false
-                                     
-            },
+                {
+                    sticky : true
+                },
             plugins : {
                 dataServices : [
-                                        
+
                 ],
                 list : [
-                {
-                    'className' : 'fr.ina.amalia.player.plugins.TimelinePlugin',
-                    'container' : '#timeline',
-                    'parameters' : {
-                                                
+                    {
+                        'className' : 'fr.ina.amalia.player.plugins.TimelinePlugin',
+                        'container' : '#timeline',
+                        'parameters' : {
+                            listOfLines : [
+
+                            ]
+                        }
                     }
-                }
                 ]
             }
-        });
-    });
-
+        } );
+    } );
     function display_velocitat_option() {
-        // Get the checkbox
         var checkBox = document.getElementById("velocitat-toggle");
-        // Get the output text
         var opt = document.getElementById("stageVelocitat");
         var label = document.getElementById("labelvelocitat");
 
-        // If the checkbox is checked, display the output text
         if (checkBox.checked){
             opt.style.display = "block";
             label.style.display = "block"
@@ -117,13 +106,10 @@
     }
 
     function display_escalar_option() {
-        // Get the checkbox
         var checkBox = document.getElementById("escalar-toggle");
-        // Get the output text
         var opt = document.getElementById("stageEscalar");
         var label = document.getElementById("labelescalar");
 
-        // If the checkbox is checked, display the output text
         if (checkBox.checked){
             opt.style.display = "block";
             label.style.display = "block"
@@ -133,13 +119,10 @@
         }
     }
     function display_volum_option() {
-        // Get the checkbox
         var checkBox = document.getElementById("volum-toggle");
-        // Get the output text
         var opt = document.getElementById("stageVolum");
         var label = document.getElementById("labelvolum");
 
-        // If the checkbox is checked, display the output text
         if (checkBox.checked){
             opt.style.display = "block";
             label.style.display = "block"
@@ -194,8 +177,6 @@
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-        }).then(() => {
-            console.log('hola')
         })
     }
 </script>
