@@ -59,9 +59,6 @@
             </div>
         </div>
         <button class="btn btn-primary" id="edita" onclick="edit()">Edita</button>
-        <a href="/download" id="download">
-            <button class="btn btn-primary" id="descarregar">Descarregar</button>
-        </a>
     </div>
 </body>
 <script>
@@ -82,7 +79,7 @@
                         'className' : 'fr.ina.amalia.player.plugins.TimelinePlugin',
                         'container' : '#timeline',
                         'parameters' : {
-                            
+
                         }
                     }
                 ]
@@ -136,7 +133,6 @@
         const opt_volum = document.getElementById("stageVolum");
         const checkBox_velocitat = document.getElementById("velocitat-toggle");
         const opt_velocitat = document.getElementById("stageVelocitat");
-        const download = document.getElementById("download");
         const editar = document.getElementById("edita");
         const labelEscalar = document.getElementById("labelescalar");
         const labelVelocitat = document.getElementById("labelvelocitat");
@@ -157,13 +153,12 @@
         opt_velocitat.style.display = 'none'
         opt_escalar.style.display = 'none'
         opt_volum.style.display = 'none'
-        download.style.display = 'inline-block'
         editar.style.display = 'none'
         labelEscalar.style.display = 'none'
         labelVelocitat.style.display = 'none'
         labelVolum.style.display = 'none'
         input_group.style.display = 'none'
-        h2.innerHTML = 'Descarrega el teu video'
+        h2.innerHTML = 'Editant el teu video, espera uns minuts...'
         await fetch("/edit", {
             method: 'POST',
             body: JSON.stringify({
@@ -176,6 +171,10 @@
                 'Content-Type': 'application/json'
             }
         })
+            .then((res) =>  window.location.href = "download.html")
+            .catch((err) => ("Error occured", err));
+        console.log('hola')
+
     }
 </script>
 <!-- CSS only -->

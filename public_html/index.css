@@ -26,19 +26,18 @@ input{
     border: 2px solid blue;
 }
 button {
-    width: 175px;
+    width: 50%;
+    margin-top: 20px;
     height: 40px;
     border-radius: 3px;
     display: flex;
+    margin-left: 20px;
     align-items: center;
     justify-content: center;
-    margin-top: 7px;
     border: 2px solid blue;
 }
 
-input[type="file"]{
-    border: none;
-}
+
 
 label {
     padding: 10px;

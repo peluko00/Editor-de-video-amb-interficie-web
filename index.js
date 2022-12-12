@@ -200,6 +200,7 @@ app.post('/edit', async (req, res) => {
                 }).run();
         });
     }
+    res.sendFile(`${__dirname}/public_html/download.html`);
 })
 
 
