@@ -131,61 +131,74 @@ app.post('/edit', async (req, res) => {
     const path = `${__dirname}/videos/${req.session.video}`
     const output = `${__dirname}/videos/-edit-${req.session.video}`;
     if (req.body.escalar){
-        await ffmpeg(path) //Input Video File
-            .output(output) // Output File
-            .videoCodec('libx264') // Video Codec
-            .videoFilters(`scale=${req.body.escalar}`)
-            .on('progress', function (data) {
-                console.log(data.percent);
-            })
-            .on('end', function (err) {
-                if (!err) {
-                    change_name(req.session.video)
-                    console.log("Conversion Done");
-                    if (req.body.volum){
-                        ffmpeg(path)
-                            .videoCodec('libx264')
-                            .audioFilters(`volume=${req.body.volum}`)
-                            .output(output)
-                            .on('end', function (err) {
-                                if (!err){
-                                    change_name(req.session.video)
-                                    console.log("Conversion Done")
-                                    if (req.body.velocitat){
-                                        ffmpeg(path)
-                                            .audioCodec('libmp3lame') // Audio Codec
-                                            .videoCodec('libx264')
-                                            .videoFilters(`setpts=${req.body.velocitat}*PTS`)
-                                            .output(output)
-                                            .on('end', function (err) {
-                                                if (!err){
-                                                    change_name(req.session.video)
-                                                    console.log("Conversion Done")
-                                                }
-                                            })
-                                            .on('progress', function (data) {
-                                                console.log(data.percent);
-                                            })
-                                            .on('error', function (err) {
-                                                console.log('error: ' + err);
-                                            }).run();
-                                    }
-                                }
-
-                            })
-                            .on('progress', function (data) {
-                                console.log(data.percent);
-                            })
-                            .on('error', function (err) {
-                                console.log('error: ' + err);
-                            }).run();
+        await new Promise((resolve,reject)=> {
+            ffmpeg(path) //Input Video File
+                .output(output) // Output File
+                .videoCodec('libx264') // Video Codec
+                .videoFilters(`scale=${req.body.escalar}`)
+                .on('progress', function (data) {
+                    console.log(data.percent);
+                })
+                .on('end', async function (err) {
+                    if (!err) {
+                        await change_name(req.session.video)
+                        console.log("Conversion Done");
+                        resolve()
                     }
-
-                }
-            })
-            .on('error', function (err) {
-                console.log('error: ' + err);
-            }).run();
+                    reject(err)
+                })
+                .on('error', function (err) {
+                    console.log('error: ' + err);
+                    reject(err)
+                }).run();
+        });
+    }
+    if (req.body.velocitat){
+        await new Promise((resolve,reject)=> {
+            ffmpeg(path)
+                .audioCodec('libmp3lame') // Audio Codec
+                .videoCodec('libx264')
+                .videoFilters(`setpts=${req.body.velocitat}*PTS`)
+                .output(output)
+                .on('end', async function (err) {
+                    if (!err) {
+                        await change_name(req.session.video)
+                        console.log("Conversion Done")
+                        resolve()
+                    }
+                    reject(err)
+                })
+                .on('progress', function (data) {
+                    console.log(data.percent);
+                })
+                .on('error', function (err) {
+                    console.log('error: ' + err);
+                    reject(err)
+                }).run();
+        })
+    }
+    if (req.body.volum) {
+        await new Promise((resolve,reject)=> {
+            ffmpeg(path)
+                .videoCodec('libx264')
+                .audioFilters(`volume=${req.body.volum}`)
+                .output(output)
+                .on('end', async function (err) {
+                    if (!err) {
+                        await change_name(req.session.video)
+                        console.log("Conversion Done")
+                        resolve()
+                    }
+                    reject(err)
+                })
+                .on('progress', function (data) {
+                    console.log(data.percent);
+                })
+                .on('error', function (err) {
+                    console.log('error: ' + err);
+                    reject(err)
+                }).run();
+        });
     }
 })
 
