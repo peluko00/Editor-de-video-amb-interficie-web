@@ -2,20 +2,16 @@ input{
     width: 75px;
     height: 20px;
     border-radius: 3px;
-    margin-left: auto;
-    margin-right: auto;
     text-align: center;
-    display: block;
     border: 2px solid blue;
 }
 a,button{
     width: 175px;
     height: 40px;
     border-radius: 3px;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    margin-top: 7px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
     border: 2px solid blue;
 }
 
@@ -28,7 +24,12 @@ div.center{
     margin-right: auto;
     text-align: center;
 }
-
+div.filtres{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
 
 video {
     width: 800px;
@@ -36,8 +37,9 @@ video {
     margin-top: 10px;
 }
 
-.options {
-    width:20%;
-    height:30px;
-    display: inline-block;
+table{
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    background-color: deepskyblue;
 }

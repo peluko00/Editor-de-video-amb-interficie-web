@@ -33,7 +33,6 @@ app.use(session({
 function change_name(path){
     const ls=fs.readdirSync(`${__dirname}/videos`);
     for (let i = 0; i < ls.length; i++) {
-        console.log('-----path', ls[i])
         if(ls[i] === path) fs.unlinkSync(`${__dirname}/videos/${path}`)
     }
     for (let j = 0; j < ls.length; j++) {
@@ -53,7 +52,7 @@ const storage = multer.diskStorage({
         cb(null, `${__dirname}/videos`)
     },
     filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname)
+        cb(null, file.originalname)
     },
 })
 const upload = multer({ storage: storage })
@@ -67,7 +66,6 @@ app.post('/upload', upload.single("my-video"), async (req, res, next) => {
 
 app.post('/save' , async (req, res, next) => {
     let link = req.body.url
-    console.log(req.body)
     const urlObject = new URL(link);
     const hostName = urlObject.hostname;
 
@@ -106,9 +104,9 @@ app.get('/download' , async (req, res, next) => {
 
 app.get('/videoplayer' , (req, res) => {
     const range = req.headers.range
-    const videoPath = `./videos/${req.session.video}`;
+    const videoPath = `videos/${req.session.video}`;
     const videoSize = fs.statSync(videoPath).size
-    const chunkSize = 1 * 1e6;
+    const chunkSize = 1e6;
     const start = Number(range.replace(/\D/g, ""))
     const end = Math.min(start + chunkSize, videoSize - 1)
     const contentLength = end - start + 1;
